@@ -1,0 +1,39 @@
+## Time-stamp: <2013-11-04 17:53:41 vk>
+## -*- coding: utf-8 -*-
+## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
+
+* org-contacts2vcard
+
+This is a Python script that converts [[http://julien.danjou.info/projects/emacs-packages#org-contacts][org-contacts]] contact information
+of [[http://en.wikipedia.org/wiki/Emacs][GNU Emacs]] with [[http://orgmode.org/][Org-mode]] to Android 4.4 contact [[https://en.wikipedia.org/wiki/VCard][VCard]] import format.
+
+- *target group*: users of [[http://orgmode.org/][Org-mode]] org-contacts who want to get their
+  contact information to Android 4.4 (only) including:
+  - First name
+  - Last name
+  - email addresses
+  - phone numbers
+  - user images
+    - this is quite personalized for me
+
+** Example
+
+FIXXME
+
+* Contribute!
+
+I am looking for your ideas:
+
+If you want to contribute to this cool project, please fork and
+contribute!
+
+I am using [[http://www.python.org/dev/peps/pep-0008/][Python PEP8]] and some ideas from [[http://en.wikipedia.org/wiki/Test-driven_development][Test Driven Development
+(TDD)]].
+
+
+* Local Variables                                                  :noexport:
+# Local Variables:
+# mode: auto-fill
+# mode: flyspell
+# eval: (ispell-change-dictionary "en_US")
+# End:
