@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Time-stamp: <2013-11-04 18:00:00 vk>
+# Time-stamp: <2013-11-04 18:12:23 vk>
 
 ## TODO:
 ## * fix parts marked with «FIXXME»
@@ -32,7 +32,6 @@ EPILOG = u"\n\
 :version: " + PROG_VERSION_NUMBER + " from " + PROG_VERSION_DATE + "\n"
 
 
-@staticmethod
 def initialize_logging(identifier, verbose, quiet):
     """Log handling and configuration"""
 
@@ -79,7 +78,6 @@ def initialize_logging(identifier, verbose, quiet):
     return logger
 
 
-@staticmethod
 def error_exit(errorcode):
     """
     Exits with return value of errorcode and prints to stderr.
@@ -133,43 +131,33 @@ if __name__ == "__main__":
 
         ## checking parameters ...
 
-        ##if not options.logfilename:
-        ##    logging.critical("Please give me a file to write to with option \"--logfile\".")
-        ##    Utils.error_exit(5)
-
-        if not os.path.isfile(options.logfilename):
-            logging.debug("log file \"" + options.logfilename + "\" is not found. Initializing with heading ...")
-
-        with open(options.logfilename, 'a') as outputhandle:
-            outputhandle.write(u"## -*- coding: utf-8 -*-\n" +
-                               "## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/\n" +
-                               "* Warnings and Error messages from lazyblorg     :lazyblorg:log:\n\n" +
-                               "Messages gets appended to this file. Please remove fixed issues manually.\n")
-            outputhandle.flush()
 
         if options.verbose and options.quiet:
             logging.error("Options \"--verbose\" and \"--quiet\" found. " +
                           "This does not make any sense, you silly fool :-)")
             Utils.error_exit(1)
 
-        ##if not options.targetdir:
-        ##    logging.critical("Please give me a folder to write to with option \"--targetdir\".")
-        ##    Utils.error_exit(2)
 
-        if not os.path.isfile(options.metadatafilename):
-            logging.warn("Blog data file \"" + options.metadatafilename + "\" is not found. Assuming first run!")
 
-        logging.debug("extracting list of Org-mode files ...")
-        logging.debug("len(orgfiles) [%s]" % str(len(options.orgfiles)))
-        if len(options.orgfiles) < 1:
-            logging.critical("Please add at least one Org-mode file name as argument")
-            Utils.error_exit(6)
 
-        ## print file names if less than 10:
-        if len(options.orgfiles) < 10:
-            logging.debug("%s filenames found: [%s]" % (str(len(options.orgfiles)), '], ['.join(options.orgfiles)))
+
+#        with open(options.logfilename, 'a') as outputhandle:
+#            outputhandle.write(u"## -*- coding: utf-8 -*-\n" +
+#                               "## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/\n" +
+#                               "* Warnings and Error messages from lazyblorg     :lazyblorg:log:\n\n" +
+#                               "Messages gets appended to this file. Please remove fixed issues manually.\n")
+#            outputhandle.flush()
+
+
+
+        #if not os.path.isfile(options.targetfile):
+
+        if os.path.isfile(options.targetfile):
+            logging.critical("Target file \"\" is found. Please use other name or remove existing file." % options.outfile)
+            error_exit(5)
         else:
-            logging.debug("%s filenames found")
+            logging.debug("targetfile: [%s]" % options.targetfile)
+
 
 
         logging.debug("successfully finished.")
