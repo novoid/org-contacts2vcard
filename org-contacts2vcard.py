@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Time-stamp: <2013-11-04 18:12:23 vk>
+# Time-stamp: <2013-11-17 19:58:21 vk>
 
 ## TODO:
 ## * fix parts marked with «FIXXME»
@@ -20,9 +20,10 @@ import argparse  ## command line arguments
 #pdb.set_trace()## FIXXME
 import pdb
 
-PROG_VERSION_NUMBER = u"0.1"
-PROG_VERSION_DATE = u"2013-11-04"
+PROG_VERSION_NUMBER = u"0.1beta"
+PROG_VERSION_DATE = u"2013-11-17"
 INVOCATION_TIME = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+
 
 EPILOG = u"\n\
 :copyright: (c) 2013 by Karl Voit <tools@Karl-Voit.at>\n\
@@ -31,11 +32,12 @@ EPILOG = u"\n\
 :bugreports: via github or <tools@Karl-Voit.at>\n\
 :version: " + PROG_VERSION_NUMBER + " from " + PROG_VERSION_DATE + "\n"
 
+LOGGINGID = "org-contacts2vcard"
 
-def initialize_logging(identifier, verbose, quiet):
+logger = logging.getLogger(LOGGINGID)
+
+def initialize_logging(verbose, quiet):
     """Log handling and configuration"""
-
-    logger = logging.getLogger(identifier)
 
     # create console handler and set level to debug
     ch = logging.StreamHandler()
@@ -85,9 +87,7 @@ def error_exit(errorcode):
     @param errorcode: integer that will be reported as return value.
     """
 
-    logger = logging.getLogger('org-contacts2vcard')
     logger.debug("exiting with error code %s" % str(errorcode))
-
     sys.stdout.flush()
     sys.exit(errorcode)
 
@@ -109,6 +109,12 @@ if __name__ == "__main__":
     parser.add_argument("--targetfile", dest="targetfile", metavar='OUTFILE', required=True,
                         help="Path where the output file will be written to.")
 
+    parser.add_argument("--imagefolder", dest="imagefolder", metavar='DIR', required=False,
+                        help="Path where the contact image files are located.")
+
+    parser.add_argument("--imageabbrev", dest="imageabbrev", metavar='NAME', required=False,
+                        help="The name of you custom link which defines contact images (e.g., \"photo\").")
+
     parser.add_argument("-v", "--verbose", dest="verbose", action="store_true",
                         help="Enable verbose mode which is quite chatty - be warned.")
 
@@ -120,7 +126,7 @@ if __name__ == "__main__":
 
     options = parser.parse_args()
 
-    logging = initialize_logging("org-contacts2vcard", options.verbose, options.quiet)
+    logging = initialize_logging(options.verbose, options.quiet)
 
     try:
 
@@ -150,13 +156,23 @@ if __name__ == "__main__":
 
 
 
-        #if not os.path.isfile(options.targetfile):
-
         if os.path.isfile(options.targetfile):
-            logging.critical("Target file \"\" is found. Please use other name or remove existing file." % options.outfile)
+            logging.critical("Target file \"\" is found. Please use other name or remove existing file." % 
+                             options.outfile)
             error_exit(5)
         else:
             logging.debug("targetfile: [%s]" % options.targetfile)
+
+        if options.imagefolder and not options.imageabbrev:
+            logging.critical("You gave me a folder for the contact images but no \"--imageabbrev\" parameter. Bad boy.")
+            error_exit(6)
+        else:
+            logging.debug("imagefolder: [%s]" % options.imagefolder)
+            logging.debug("imageabbrev: [%s]" % options.imageabbrev)
+
+
+        ## FIXXME: add stuff here!
+
 
 
 
