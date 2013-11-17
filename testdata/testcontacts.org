@@ -1,0 +1,170 @@
+## Time-stamp: <2013-11-17 19:16:39 vk>
+## -*- coding: utf-8 -*-
+## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
+
+This file contains org-contacts test entries for testing
+org-contacts2vcard.py in various situations.
+
+* Test Contacts
+
+** Test Fullyfilledoutsquaredphoto                  :TestNormalSquaredPhoto:
+:PROPERTIES:
+:TYPE: person
+:TITLE: Dr.techn.
+:EMAIL: Test.FullyfilledoutwithoutphotoTestFullyfilledoutwithoutphoto@example.com
+:URL: http://github.com/novoid/org-contacts2vcard
+:MOBILE:   0043/664/123456789
+:HOMEPHONE: 0043/664/123456789
+:WORKPHONE: 0043/664/123456789
+:PHONE: 0043/664/123456789
+:COMPANY: Test Company
+:STREET: Test Street
+:POSTALCODE: 1234
+:CITY: Test City
+:COUNTRY:  Österreich
+:PHOTOGRAPH: [[photo:square.jpg]]
+:BORN: 1980-12-31
+:ITOLDTHEM_EMAIL: myself@example.com
+:ITOLDTHEM_ADDRESS: Test Itoldthemaddress
+:ITOLDTHEM_PHONE: 0043/669/987654321 
+:ADDRESS_CHANGE_METHOD: Test Addresschangemethod
+:CREATED:  [2013-11-17 Sun 18:58]
+:END:
+
+This is a test contact with each and every item filled out.
+  
+*** Test Nocontact
+
+This is a sub-heading without contact information at all.
+
+
+** Test Multipleentries                                :TestMultipleEntries:
+:PROPERTIES:
+:TYPE: person
+:EMAIL: Test.Multiple1@example.com
+:EMAIL: Test.Multiple2@example.com
+:EMAIL: Test.Multiple3@example.com
+:EMAIL: Test.Multiple4@example.com
+:URL: http://ecample.com/1
+:URL: http://ecample.com/2
+:URL: http://ecample.com/3
+:MOBILE:   0043/664/1234567891
+:MOBILE:   0043/664/1234567892
+:MOBILE:   0043/664/1234567893
+:HOMEPHONE: 0043/664/12345671
+:HOMEPHONE: 0043/664/12345672
+:HOMEPHONE: 0043/664/12345673
+:WORKPHONE: 0043/664/123451
+:WORKPHONE: 0043/664/123452
+:WORKPHONE: 0043/664/123453
+:PHONE: 0043/664/123451
+:PHONE: 0043/664/123452
+:PHONE: 0043/664/123453
+:COMPANY: Test Company
+:END:
+
+This is a test contact with multiple entries for a sub-set of entries.
+
+** Image Format Tests
+
+*** Test GIFphoto                                            :TestGIFphoto:
+:PROPERTIES:
+:TYPE: person
+:EMAIL: formatGIF@example.com
+:MOBILE:   0043/664/111111111
+:PHOTOGRAPH: [[photo:formatGIF.gif]]
+:CREATED:  [2013-11-17 Sun 19:07]
+:END:
+
+*** Test PNGphoto                                            :TestPNGphoto:
+:PROPERTIES:
+:TYPE: person
+:EMAIL: formatPNG@example.com
+:MOBILE:   0043/664/111111112
+:PHOTOGRAPH: [[photo:formatPNG.png]]
+:CREATED:  [2013-11-17 Sun 19:07]
+:END:
+*** Test TIFFphoto                                          :TestTIFFphoto:
+:PROPERTIES:
+:TYPE: person
+:EMAIL: formatTIFF@example.com
+:MOBILE:   0043/664/111111113
+:PHOTOGRAPH: [[photo:formatTIFF.tiff]]
+:CREATED:  [2013-11-17 Sun 19:07]
+:END:
+
+*** Test JPEGphoto                                          :TestJPEGphoto:
+:PROPERTIES:
+:TYPE: person
+:EMAIL: formatJPEG@example.com
+:MOBILE:   0043/664/111111114
+:PHOTOGRAPH: [[photo:formatJPEG.jpeg]]
+:CREATED:  [2013-11-17 Sun 19:07]
+:END:
+
+
+** Image Size Tests
+
+*** Test Landscape                                     :TestLandscapephoto:
+:PROPERTIES:
+:TYPE: person
+:EMAIL: formatJPEG@example.com
+:MOBILE:   0043/664/111111120
+:PHOTOGRAPH: [[photo:landscape.jpg]]
+:CREATED:  [2013-11-17 Sun 19:07]
+:END:
+
+*** Test Portrait                                       :TestPortraitphoto:
+:PROPERTIES:
+:TYPE: person
+:EMAIL: formatJPEG@example.com
+:MOBILE:   0043/664/111111121
+:PHOTOGRAPH: [[photo:portrait.jpg]]
+:CREATED:  [2013-11-17 Sun 19:07]
+:END:
+
+*** Test Square                                           :TestSquarephoto:
+:PROPERTIES:
+:TYPE: person
+:EMAIL: formatJPEG@example.com
+:MOBILE:   0043/664/111111122
+:PHOTOGRAPH: [[photo:square.jpg]]
+:CREATED:  [2013-11-17 Sun 19:07]
+:END:
+
+
+** Test Nophonenoemail                                  :TestNophonenoemail:
+:PROPERTIES:
+:TYPE: company
+:TITLE: 
+:EMAIL: 
+:URL: 
+:MOBILE:
+:HOMEPHONE: 
+:WORKPHONE: 
+:PHONE: 
+:COMPANY: 
+:STREET: 
+:POSTALCODE: 
+:CITY: 
+:COUNTRY:  Österreich
+TestNophonenoemail:BORN: 
+:ITOLDTHEM_EMAIL: 
+:ITOLDTHEM_ADDRESS: 
+:ITOLDTHEM_PHONE: 
+:ADDRESS_CHANGE_METHOD: 
+:CREATED:  [2013-11-17 Sun 19:15]
+:END:
+
+This should not end up in resulting vcard because it has no phone
+number and no email address associated.
+  
+
+
+
+* Local Variables                                                  :noexport:
+# Local Variables:
+# mode: auto-fill
+# mode: flyspell
+# eval: (ispell-change-dictionary "en_US")
+# End:

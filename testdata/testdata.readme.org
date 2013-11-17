@@ -1,0 +1,11 @@
+Test images:
+
+- landscape:
+  - https://secure.flickr.com/photos/library_of_congress/2179146850/sizes/o/in/photostream/
+- portrait:
+  - https://secure.flickr.com/photos/lsuc_archives/10613345573/sizes/o/in/photostream/
+- square:
+  - https://secure.flickr.com/photos/library_of_congress/5189332947/sizes/o/in/photostream/
+- format*:
+  - detail from
+    https://secure.flickr.com/photos/library_of_congress/2179146850/sizes/o/in/photostream/
