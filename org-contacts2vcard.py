@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Time-stamp: <2013-11-17 19:58:21 vk>
+# Time-stamp: <2013-11-17 20:56:06 vk>
 
 ## TODO:
 ## * fix parts marked with «FIXXME»
@@ -15,6 +15,8 @@ import logging
 import datetime
 import sys
 import argparse  ## command line arguments
+import re  ## regex library
+import codecs  ## Unicode file handling
 
 ## debugging:   for setting a breakpoint:
 #pdb.set_trace()## FIXXME
@@ -35,6 +37,17 @@ EPILOG = u"\n\
 LOGGINGID = "org-contacts2vcard"
 
 logger = logging.getLogger(LOGGINGID)
+
+HEADER_REGEX = re.compile('^(\*+)\s+(.*?)(\s+(:\S+:)+)?$')
+PHONE = '\s+([\+\d\-/ ]{7,})$'
+EMAIL = '[a-zA-Z0-9._%-+]+@[a-zA-Z0-9._%-]+.[a-zA-Z]{2,6}'
+MOBILE_REGEX = re.compile(':MOBILE:' + PHONE)
+HOMEPHONE_REGEX = re.compile(':HOMEPHONE:' + PHONE)
+WORKPHONE_REGEX = re.compile(':WORKPHONE:' + PHONE)
+PHONE_REGEX = re.compile(':PHONE:' + PHONE)
+EMAIL_REGEX = re.compile(':EMAIL:\s+' + EMAIL)
+PHOTOGRAPH_REGEX = re.compile(':PHOTOGRAPH: [[photo:(.+)]]')
+
 
 def initialize_logging(verbose, quiet):
     """Log handling and configuration"""
@@ -93,6 +106,72 @@ def error_exit(errorcode):
 
 
 
+def parse_org_contact_file():
+    """
+    Parses the given Org-mode file for contact entries.
+
+    The return format is a follows:
+    contacts = [<contact1>, <contact2>, <contact3>, ...]
+    with "contact1" like:
+    {'name':'First Middle Last', 'mobile':['++43/699/1234567', '0043681987654'], 'homephone':['0316/87654'],
+     'workphone':['0399-9876543-42'], 'phone':['001-5489-808908'], 'email':['my-first-address@example.com', 
+     'my-second-address@example.com'], 'photograph':['/validated/path/to/image/file.jpeg']}
+
+    @param return: list of dict-entries containing the contact data item lists
+    """
+
+    linenr = 0
+
+    ## defining distinct parsing status states:
+    headersearch = 152
+    propertysearch = 156
+    inproperty = 160
+    status = headersearch
+    
+    contacts = []
+    currententry = {}
+
+
+	## HEADER_REGEX = re.compile('^(\*+)\s+(.*?)(\s+(:\S+:)+)?$')
+	## MOBILE_REGEX = re.compile(':MOBILE:' + PHONE)
+	## HOMEPHONE_REGEX = re.compile(':HOMEPHONE:' + PHONE)
+	## WORKPHONE_REGEX = re.compile(':WORKPHONE:' + PHONE)
+	## PHONE_REGEX = re.compile(':PHONE:' + PHONE)
+	## EMAIL_REGEX = re.compile(':EMAIL:\s+' + EMAIL)
+	## PHOTOGRAPH_REGEX = re.compile(':PHOTOGRAPH: [[photo:(.+)]]')
+
+
+    for rawline in codecs.open(options.orgfile, 'r', encoding='utf-8'):
+        line = rawline.strip()   ## trailing and leading spaces are stupid
+        linenr += 1
+
+        if status == headersearch:
+            pass
+
+            ## FIXXME: if heading -> start new entry & goto propertysearch
+
+        elif status == propertysearch:
+
+            pass
+            ## FIXXME: if :PROPERTY: change status to inproperty
+
+        elif status == inproperty:
+
+            pass
+
+            ## FIXXME: collect property elements
+
+            ## FIXXME: if :END: -> close current entry and add to contacts
+
+        else:
+            ## I must have mixed up status numbers or similar - should never be reached.
+            logging.error("Oops. Internal parser error: status \"%s\" unknown. The programmer is an idiot. Current contact entry might get lost due to recovering from that shock. (line number %s)" % (str(status), str(linenr)))
+            status = headersearch
+            currententry = {}
+            continue
+            
+
+
 if __name__ == "__main__":
 
     mydescription = u"FIXXME. Please refer to \n" + \
@@ -103,7 +182,7 @@ if __name__ == "__main__":
                                      epilog=EPILOG,
                                      description=mydescription)
 
-    parser.add_argument("--orgfile", dest="orgfile", nargs='+', metavar='ORGFILE', required=True,
+    parser.add_argument("--orgfile", dest="orgfile", metavar='ORGFILE', required=True,
                         help="One Org-mode file which contains all contact information.")
 
     parser.add_argument("--targetfile", dest="targetfile", metavar='OUTFILE', required=True,
@@ -171,9 +250,9 @@ if __name__ == "__main__":
             logging.debug("imageabbrev: [%s]" % options.imageabbrev)
 
 
+        parse_org_contact_file()
         ## FIXXME: add stuff here!
-
-
+        
 
 
         logging.debug("successfully finished.")
