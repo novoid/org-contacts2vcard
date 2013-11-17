@@ -1,4 +1,4 @@
-## Time-stamp: <2013-11-17 19:41:56 vk>
+## Time-stamp: <2013-11-17 20:13:03 vk>
 ## -*- coding: utf-8 -*-
 ## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
 
@@ -71,7 +71,7 @@ This is a test contact with multiple entries for a sub-set of entries.
 :PROPERTIES:
 :TYPE: person
 :EMAIL: formatGIF@example.com
-:MOBILE:   0043/664/111111111
+:MOBILE:   ++43 664 111111111
 :PHOTOGRAPH: [[photo:formatGIF.gif]]
 :CREATED:  [2013-11-17 Sun 19:07]
 :END:
@@ -80,7 +80,7 @@ This is a test contact with multiple entries for a sub-set of entries.
 :PROPERTIES:
 :TYPE: person
 :EMAIL: formatPNG@example.com
-:MOBILE:   0043/664/111111112
+:MOBILE:     ++43-664/11111111-2
 :PHOTOGRAPH: [[photo:formatPNG.png]]
 :CREATED:  [2013-11-17 Sun 19:07]
 :END:
@@ -88,7 +88,7 @@ This is a test contact with multiple entries for a sub-set of entries.
 :PROPERTIES:
 :TYPE: person
 :EMAIL: formatTIFF@example.com
-:MOBILE:   0043/664/111111113
+:MOBILE: 0043664111111113
 :PHOTOGRAPH: [[photo:formatTIFF.tiff]]
 :CREATED:  [2013-11-17 Sun 19:07]
 :END:
@@ -101,7 +101,6 @@ This is a test contact with multiple entries for a sub-set of entries.
 :PHOTOGRAPH: [[photo:formatJPEG.jpeg]]
 :CREATED:  [2013-11-17 Sun 19:07]
 :END:
-
 
 ** Image Size Tests
 
