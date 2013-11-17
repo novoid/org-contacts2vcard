@@ -1,1 +1,1 @@
-./org-contacts2vcard.py --orgfile ~/org/contacts.org --targetfile out.vcard -v
+./org-contacts2vcard.py --orgfile testdata/testcontacts.org --targetfile testdata/testcontacts.vcard -v

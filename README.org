@@ -1,4 +1,4 @@
-## Time-stamp: <2013-11-04 17:53:41 vk>
+## Time-stamp: <2013-11-17 19:32:07 vk>
 ## -*- coding: utf-8 -*-
 ## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
 
@@ -14,11 +14,40 @@ of [[http://en.wikipedia.org/wiki/Emacs][GNU Emacs]] with [[http://orgmode.org/]
   - email addresses
   - phone numbers
   - user images
-    - this is quite personalized for me
+    - Note: the way contact images are referred to is personalized for
+      me (see below). Therefore, you have to adopt either the script
+      to your needs or you adopt my image method to your Org-mode :-)
 
 ** Example
 
-FIXXME
+Please take a look at the example org-contact file
+[[https://github.com/novoid/org-contacts2vcard/blob/master/testdata/testcontacts.org][testdata/testcontacts.org]]
+
+The file [[https://github.com/novoid/org-contacts2vcard/blob/master/example_invocation.sh][example_invocation.sh]] gives you some impression on how to
+invoke this script.
+
+** Contact Images
+
+In [[https://github.com/novoid/org-contacts2vcard/blob/master/testdata/testcontacts.org][testdata/testcontacts.org]] you will notice contact photographs are
+included like this:
+
+: :PHOTOGRAPH: [[photo:FirstnameLastname.jpeg]]
+
+~photo:~ is a [[http://orgmode.org/org.html#Adding-hyperlink-types][custom link]] which is defined in [[https://github.com/novoid/dot-emacs/blob/master/org-mode.el][my org-mode
+configuration file]]:
+
+: (setq org-link-abbrev-alist
+:       '(
+: [...]
+:         ("photo" . "file:~/people/all_photographs/%s")
+: [...]
+:         ))
+
+As you can see, I linked it to files in the folder
+~$HOME/people/all_photographs~.
+
+If you use a similar definition, you are able to use my script without
+changes.
 
 * Contribute!
 

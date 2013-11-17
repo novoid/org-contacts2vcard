@@ -1,4 +1,4 @@
-## Time-stamp: <2013-11-17 19:16:39 vk>
+## Time-stamp: <2013-11-17 19:21:42 vk>
 ## -*- coding: utf-8 -*-
 ## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
 
@@ -136,32 +136,25 @@ This is a test contact with multiple entries for a sub-set of entries.
 ** Test Nophonenoemail                                  :TestNophonenoemail:
 :PROPERTIES:
 :TYPE: company
-:TITLE: 
+:TITLE: any title
 :EMAIL: 
-:URL: 
+:URL: http://example.com/nophone
 :MOBILE:
 :HOMEPHONE: 
 :WORKPHONE: 
 :PHONE: 
-:COMPANY: 
-:STREET: 
-:POSTALCODE: 
-:CITY: 
+:COMPANY: test company
+:STREET: test street
+:POSTALCODE: 12345
+:CITY: test city
 :COUNTRY:  Österreich
-TestNophonenoemail:BORN: 
-:ITOLDTHEM_EMAIL: 
-:ITOLDTHEM_ADDRESS: 
-:ITOLDTHEM_PHONE: 
-:ADDRESS_CHANGE_METHOD: 
+:BORN: yes :-)
 :CREATED:  [2013-11-17 Sun 19:15]
 :END:
 
 This should not end up in resulting vcard because it has no phone
 number and no email address associated.
   
-
-
-
 * Local Variables                                                  :noexport:
 # Local Variables:
 # mode: auto-fill
