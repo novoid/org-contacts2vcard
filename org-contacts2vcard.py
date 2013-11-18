@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Time-stamp: <2013-11-17 20:56:06 vk>
+# Time-stamp: <2013-11-18 17:24:42 vk>
 
 ## TODO:
 ## * fix parts marked with «FIXXME»
@@ -40,13 +40,13 @@ logger = logging.getLogger(LOGGINGID)
 
 HEADER_REGEX = re.compile('^(\*+)\s+(.*?)(\s+(:\S+:)+)?$')
 PHONE = '\s+([\+\d\-/ ]{7,})$'
-EMAIL = '[a-zA-Z0-9._%-+]+@[a-zA-Z0-9._%-]+.[a-zA-Z]{2,6}'
+EMAIL = '([a-zA-Z0-9._%-+]+@[a-zA-Z0-9._%-]+.[a-zA-Z]{2,6})'
 MOBILE_REGEX = re.compile(':MOBILE:' + PHONE)
 HOMEPHONE_REGEX = re.compile(':HOMEPHONE:' + PHONE)
 WORKPHONE_REGEX = re.compile(':WORKPHONE:' + PHONE)
 PHONE_REGEX = re.compile(':PHONE:' + PHONE)
 EMAIL_REGEX = re.compile(':EMAIL:\s+' + EMAIL)
-PHOTOGRAPH_REGEX = re.compile(':PHOTOGRAPH: [[photo:(.+)]]')
+PHOTOGRAPH_REGEX = re.compile(':PHOTOGRAPH: \[\[photo:(.+)\]\]')
 
 
 def initialize_logging(verbose, quiet):
@@ -105,6 +105,28 @@ def error_exit(errorcode):
     sys.exit(errorcode)
 
 
+def check_contact(entry):
+    """
+    Checks the current entry dict and returns true if it meets all criteria.
+
+    @param return: True if it is OK. False if not.
+    """
+
+    if not entry:
+        logging.error("No entry found -> check failed")
+        return False
+
+    if entry['name'] == "":
+        logging.warn("Entry did not have a name -> ignoring")
+        return False
+
+    if entry['mobile'] == [] and entry['mobile'] == [] and entry['homephone'] == [] and \
+            entry['workphone'] == [] and entry['phone'] == [] and entry['email'] == []:
+        logging.warn("Entry \"%s\" did not have a name single phone number or email address -> ignoring" % entry['name'])
+        return False
+
+    return True
+
 
 def parse_org_contact_file():
     """
@@ -123,45 +145,71 @@ def parse_org_contact_file():
     linenr = 0
 
     ## defining distinct parsing status states:
-    headersearch = 152
-    propertysearch = 156
-    inproperty = 160
+    headersearch = 21
+    propertysearch = 42
+    inproperty = 73
     status = headersearch
     
     contacts = []
     currententry = {}
 
-
-	## HEADER_REGEX = re.compile('^(\*+)\s+(.*?)(\s+(:\S+:)+)?$')
-	## MOBILE_REGEX = re.compile(':MOBILE:' + PHONE)
-	## HOMEPHONE_REGEX = re.compile(':HOMEPHONE:' + PHONE)
-	## WORKPHONE_REGEX = re.compile(':WORKPHONE:' + PHONE)
-	## PHONE_REGEX = re.compile(':PHONE:' + PHONE)
-	## EMAIL_REGEX = re.compile(':EMAIL:\s+' + EMAIL)
-	## PHOTOGRAPH_REGEX = re.compile(':PHOTOGRAPH: [[photo:(.+)]]')
-
-
     for rawline in codecs.open(options.orgfile, 'r', encoding='utf-8'):
         line = rawline.strip()   ## trailing and leading spaces are stupid
         linenr += 1
 
+        #logging.debug("line [%s]" % line)
+        #logging.debug("status [%s]" % str(status))
+
+        header_components = re.match(HEADER_REGEX, line)
+        if header_components:
+            ## in case of new header, make new currententry because previous one was not a contact header with a property
+            currententry = {'mobile':[], 'homephone':[], 'workphone':[], 'phone':[], 'email':[], 'photograph':[]}
+            currententry['name'] = header_components.group(2)
+            status = propertysearch
+            continue
+
         if status == headersearch:
-            pass
+            ## if there is something to do, it was done above when a new heading is found
+            continue
 
-            ## FIXXME: if heading -> start new entry & goto propertysearch
-
-        elif status == propertysearch:
-
-            pass
-            ## FIXXME: if :PROPERTY: change status to inproperty
+        if status == propertysearch:
+            if line == u':PROPERTIES:':
+                status = inproperty
+            continue
 
         elif status == inproperty:
 
-            pass
+            mobile_components = re.match(MOBILE_REGEX, line)
+            homephone_components = re.match(HOMEPHONE_REGEX, line)
+            workphone_components = re.match(WORKPHONE_REGEX, line)
+            phone_components = re.match(PHONE_REGEX, line)
+            email_components = re.match(EMAIL_REGEX, line)
+            photograph_components = re.match(PHOTOGRAPH_REGEX, line)
 
-            ## FIXXME: collect property elements
+            if mobile_components:
+                currententry['mobile'].append(mobile_components.group(1))
+            elif homephone_components:
+                currententry['homephone'].append(homephone_components.group(1))
+            elif workphone_components:
+                currententry['workphone'].append(workphone_components.group(1))
+            elif phone_components:
+                currententry['phone'].append(phone_components.group(1))
+            elif email_components:
+                currententry['email'].append(email_components.group(1))
+            elif photograph_components:
+                currententry['photograph'].append(photograph_components.group(1))
+                #pdb.set_trace()## FIXXME
+            elif line == u':END:':
+                if check_contact(currententry):
+                    contacts.append(currententry)
+                    logging.debug("appended contact \"%s\"" % currententry['name'])
+                else:
+                    logging.debug("contact \"%s\" did not pass the tests -> ignoring" % currententry['name'])
+                status = headersearch
+                #pdb.set_trace()## FIXXME
 
-            ## FIXXME: if :END: -> close current entry and add to contacts
+            continue
+
 
         else:
             ## I must have mixed up status numbers or similar - should never be reached.
@@ -169,7 +217,9 @@ def parse_org_contact_file():
             status = headersearch
             currententry = {}
             continue
-            
+
+    logging.info("found %s suitable contacts while parsing \"%s\"" % (str(len(contacts)), options.orgfile))
+    return contacts
 
 
 if __name__ == "__main__":
@@ -222,19 +272,6 @@ if __name__ == "__main__":
                           "This does not make any sense, you silly fool :-)")
             Utils.error_exit(1)
 
-
-
-
-
-#        with open(options.logfilename, 'a') as outputhandle:
-#            outputhandle.write(u"## -*- coding: utf-8 -*-\n" +
-#                               "## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/\n" +
-#                               "* Warnings and Error messages from lazyblorg     :lazyblorg:log:\n\n" +
-#                               "Messages gets appended to this file. Please remove fixed issues manually.\n")
-#            outputhandle.flush()
-
-
-
         if os.path.isfile(options.targetfile):
             logging.critical("Target file \"\" is found. Please use other name or remove existing file." % 
                              options.outfile)
@@ -250,10 +287,9 @@ if __name__ == "__main__":
             logging.debug("imageabbrev: [%s]" % options.imageabbrev)
 
 
-        parse_org_contact_file()
-        ## FIXXME: add stuff here!
+        contacts = parse_org_contact_file()
         
-
+        ## FIXXME: write vcard file here
 
         logging.debug("successfully finished.")
 
