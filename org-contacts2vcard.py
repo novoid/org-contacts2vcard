@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Time-stamp: <2013-11-20 18:15:57 vk>
+# Time-stamp: <2013-11-20 20:07:29 vk>
 
 ## TODO:
 ## * fix parts marked with «FIXXME»
@@ -22,10 +22,10 @@ import base64  ## for encoding to Base64
 
 ## debugging:   for setting a breakpoint:
 #pdb.set_trace()## FIXXME
-import pdb
+#import pdb
 
-PROG_VERSION_NUMBER = u"0.1beta"
-PROG_VERSION_DATE = u"2013-11-17"
+PROG_VERSION_NUMBER = u"0.1"
+PROG_VERSION_DATE = u"2013-11-20"
 INVOCATION_TIME = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
 
 
@@ -119,18 +119,32 @@ def check_contact(entry):
         return False
 
     if entry['name'] == "":
-        logging.warn("Entry did not have a name -> ignoring")
+        logging.warn("Contact did not have a name -> ignoring")
         return False
 
     if entry['mobile'] == [] and entry['mobile'] == [] and entry['homephone'] == [] and \
             entry['workphone'] == [] and entry['phone'] == [] and entry['email'] == []:
-        logging.warn("Entry \"%s\" did not have a name single phone number or email address -> ignoring" % entry['name'])
+        logging.warn("Contact \"%s\" did not have a name single phone number or email address -> ignoring" % entry['name'])
         return False
 
     return True
 
 
-def parse_org_contact_file(orgfile):
+def check_phone_number_and_warn_if_necessary(name, number):
+    """
+    Checks a given phone number string and issues warnings if format
+    is not 100% OK.
+
+    @param name: string containing a contact name
+    @param number: string containing a phone number
+    @param return: nothing
+    """
+
+    if number[:2] != '00':
+        logging.warning("Contact \"%s\": number \"%s\" does not start with \"00\"." % (name, number))
+
+
+def parse_org_contact_file(orgfile, include_images):
     """
     Parses the given Org-mode file for contact entries.
 
@@ -142,6 +156,7 @@ def parse_org_contact_file(orgfile):
      'my-second-address@example.com'], 'photograph':['/validated/path/to/image/file.jpeg']}
 
     @param orgfile: file name of a Org-mode file to parse
+    @param include_images: boolean is True, when image files should be handled
     @param return: list of dict-entries containing the contact data item lists
     """
 
@@ -191,17 +206,23 @@ def parse_org_contact_file(orgfile):
 
             if mobile_components:
                 currententry['mobile'].append(mobile_components.group(1))
+                check_phone_number_and_warn_if_necessary(currententry['name'], mobile_components.group(1))
             elif homephone_components:
                 currententry['homephone'].append(homephone_components.group(1))
+                check_phone_number_and_warn_if_necessary(currententry['name'], homephone_components.group(1))
             elif workphone_components:
                 currententry['workphone'].append(workphone_components.group(1))
+                check_phone_number_and_warn_if_necessary(currententry['name'], workphone_components.group(1))
             elif phone_components:
                 currententry['phone'].append(phone_components.group(1))
+                check_phone_number_and_warn_if_necessary(currententry['name'], phone_components.group(1))
             elif email_components:
                 currententry['email'].append(email_components.group(1))
             elif photograph_components:
-                currententry['photograph'].append(photograph_components.group(1))
-                #pdb.set_trace()## FIXXME
+                if include_images:
+                    currententry['photograph'].append(photograph_components.group(1))
+                else:
+                    logging.debug("contact has photograph but include_images is False: [%s]" % currententry['name'])
             elif line == u':END:':
                 if check_contact(currententry):
                     contacts.append(currententry)
@@ -209,7 +230,6 @@ def parse_org_contact_file(orgfile):
                 else:
                     logging.debug("contact \"%s\" did not pass the tests -> ignoring" % currententry['name'])
                 status = headersearch
-                #pdb.set_trace()## FIXXME
 
             continue
 
@@ -231,7 +251,7 @@ def vcard_header():
     @param return: string containing the VCard header
     """
 
-    return u"BEGIN:VCARD\nVERSION:2.1"
+    return u"BEGIN:VCARD\nVERSION:2.1\n"
 
 
 def vcard_footer():
@@ -260,7 +280,9 @@ def file_extension_and_base64_of_file(filename):
         upperfiletype = filetype.upper().replace(".", "")
         if upperfiletype == 'JPG':
             upperfiletype = 'JPEG'
-        if upperfiletype not in ['JPEG', 'GIF','TIFF','PNG']:  ## FIXXME: PNG is not part of VCard 2.1 standard! -> check!
+        if upperfiletype not in ['JPEG', 'GIF', 'PNG']:  
+            ## PNG is not part of VCard 2.1 standard! -> However, it works on Android 4.4
+            ## TIFF is part of VCard 2.1 standard! -> However, does not work on Android 4.4
             logging.debug("image file extension \"%s\" not in list of known extensions." % upperfiletype)
             logging.warn("Contact image file \"%s\" has not file type (extension) which is recognized. Skipping it this time." % fullname)
             return None, None
@@ -312,7 +334,9 @@ def generate_vcard_file(contacts, targetfile):
 
 if __name__ == "__main__":
 
-    mydescription = u"FIXXME. Please refer to \n" + \
+    mydescription = u"This script converts Org-mode contacts of a certain format\n" + \
+        "to a VCard file which is suitable to be imported to Android 4.4 (and probably\n" + \
+        "others as well). Please refer to \n" + \
         "https://github.com/novoid/org-contacts2vcard for more information."
 
     parser = argparse.ArgumentParser(prog=sys.argv[0],
@@ -370,18 +394,22 @@ if __name__ == "__main__":
         if options.imagefolder and not options.imageabbrev:
             logging.critical("You gave me a folder for the contact images but no \"--imageabbrev\" parameter. Bad boy.")
             error_exit(6)
+        elif options.imageabbrev and not options.imagefolder:
+            logging.critical("You gave me the \"--imageabbrev\" parameter but no folder for the contact images. Bad boy.")
+            error_exit(7)
         else:
             logging.debug("imagefolder: [%s]" % options.imagefolder)
             logging.debug("imageabbrev: [%s]" % options.imageabbrev)
 
+        include_images = False
+        if options.imagefolder:
+            include_images = True
 
-        contacts = parse_org_contact_file(options.orgfile)
+        contacts = parse_org_contact_file(options.orgfile, include_images)
 
         logging.debug("----- parsing finished; generating VCard file ...")
 
         count = generate_vcard_file(contacts, options.targetfile)
-
-        ## FIXXME: write vcard file here
 
         logging.info("successfully converted %s contacts to \"%s\"." % (str(count), options.targetfile))
 

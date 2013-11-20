@@ -1,4 +1,4 @@
-## Time-stamp: <2013-11-20 18:14:15 vk>
+## Time-stamp: <2013-11-20 20:06:13 vk>
 ## -*- coding: utf-8 -*-
 ## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
 
@@ -57,9 +57,9 @@ This is a sub-heading without contact information at all.
 :WORKPHONE: 0043/664/123451
 :WORKPHONE: 0043/664/123452
 :WORKPHONE: 0043/664/123453
-:PHONE: 0043/664/123451
-:PHONE: 0043/664/123452
-:PHONE: 0043/664/123453
+:PHONE: 0043/664/123
+:PHONE: 0043/664/123
+:PHONE: 0043/664/123
 :COMPANY: Test Company
 :PHOTOGRAPH: [[photo:formatJPEG.jpeg]]
 :PHOTOGRAPH: [[photo:formatPNG.png]]
@@ -170,7 +170,9 @@ number and no email address associated.
 :PROPERTIES:
 :TYPE: person
 :EMAIL: wrongimageformat@example.com
-:MOBILE:   0043/664/111111131
+:MOBILE:   ++43/664/111111131
+:MOBILE:   111111132
+:MOBILE:   43/664/111111133
 :PHOTOGRAPH: [[photo:empty.foo]]
 :END:
   
