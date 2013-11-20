@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Time-stamp: <2013-11-20 21:22:40 vk>
+# Time-stamp: <2013-11-20 21:28:43 vk>
 
 ## TODO:
 ## * fix parts marked with «FIXXME»
@@ -268,10 +268,11 @@ def vcard_footer():
     return u"END:VCARD\n"
 
 
-def file_extension_and_base64_of_file(filename):
+def file_extension_and_base64_of_file(contact, filename):
     """
     Reads the content of the given file and returns its Base64 encoded content.
 
+    @param contact: contact name - for output logging
     @param filename: a file name
     @param return: string of file type according to VCard 2.1 standard format
     @param return: base64 string of file content; None if file not found or error occurred.
@@ -289,13 +290,13 @@ def file_extension_and_base64_of_file(filename):
             ## PNG is not part of VCard 2.1 standard! -> However, it works on Android 4.4
             ## TIFF is part of VCard 2.1 standard! -> However, does not work on Android 4.4
             logging.debug("image file extension \"%s\" not in list of known extensions." % upperfiletype)
-            logging.warn("Contact image file \"%s\" has not file type (extension) which is recognized. Skipping it this time." % fullname)
+            logging.warn("Contact \"%s\": image file \"%s\" has not file type (extension) which is recognized. Skipping it this time." % (contact, fullname))
             return None, None
 
         with open(fullname, "rb") as image_file:
             return upperfiletype, base64.b64encode(image_file.read())
     else:
-        logging.warn("Contact image file \"%s\" could not be found. Skipping it this time." % fullname)
+        logging.warn("Contact \"%s\": image file \"%s\" could not be found. Skipping it this time." % (contact, fullname))
         return None, None
 
 
@@ -327,7 +328,7 @@ def generate_vcard_file(contacts, targetfile):
             for email in contact['email']:
                 output.write(u'EMAIL:' + email + '\n')
             if len(contact['photograph']) > 0:
-                filetype, base64string = file_extension_and_base64_of_file(contact['photograph'][0])
+                filetype, base64string = file_extension_and_base64_of_file(contact['name'], contact['photograph'][0])
                 if filetype and base64string:
                     output.write("PHOTO;ENCODING=BASE64;TYPE=" + filetype + ":" + base64string + '\n\n')
                 if len(contact['photograph']) > 1:
