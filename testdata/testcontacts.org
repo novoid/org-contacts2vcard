@@ -1,4 +1,4 @@
-## Time-stamp: <2013-11-17 20:13:03 vk>
+## Time-stamp: <2013-11-20 18:14:15 vk>
 ## -*- coding: utf-8 -*-
 ## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
 
@@ -61,6 +61,8 @@ This is a sub-heading without contact information at all.
 :PHONE: 0043/664/123452
 :PHONE: 0043/664/123453
 :COMPANY: Test Company
+:PHOTOGRAPH: [[photo:formatJPEG.jpeg]]
+:PHOTOGRAPH: [[photo:formatPNG.png]]
 :END:
 
 This is a test contact with multiple entries for a sub-set of entries.
@@ -162,6 +164,14 @@ number and no email address associated.
 :EMAIL: noimagefile@example.com
 :MOBILE:   0043/664/111111130
 :PHOTOGRAPH: [[photo:doesnotexist.jpg]]
+:END:
+
+** Test Wrongimageformat
+:PROPERTIES:
+:TYPE: person
+:EMAIL: wrongimageformat@example.com
+:MOBILE:   0043/664/111111131
+:PHOTOGRAPH: [[photo:empty.foo]]
 :END:
   
 * Local Variables                                                  :noexport:
