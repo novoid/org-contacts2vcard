@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Time-stamp: <2013-11-20 20:53:30 vk>
+# Time-stamp: <2013-11-20 21:22:40 vk>
 
 ## TODO:
 ## * fix parts marked with «FIXXME»
@@ -309,12 +309,13 @@ def generate_vcard_file(contacts, targetfile):
 
     count = 0
 
-    with open(targetfile, 'wb') as output:
+    with codecs.open(targetfile, 'wb', encoding = "utf-8") as output:
         for contact in contacts:
             logging.debug("writing contact [%s] ..." % contact['name'])
             output.write(vcard_header())
 
-            output.write(u'FN:' + contact['name'] + '\n')
+            output.write(u'FN:' + unicode(contact['name']) + u'\n')
+
             for mobile in contact['mobile']:
                 output.write(u'TEL;CELL:' + mobile + '\n')
             for homephone in contact['homephone']:
