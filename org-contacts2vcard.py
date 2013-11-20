@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Time-stamp: <2013-11-18 17:24:42 vk>
+# Time-stamp: <2013-11-20 18:15:57 vk>
 
 ## TODO:
 ## * fix parts marked with «FIXXME»
@@ -17,6 +17,8 @@ import sys
 import argparse  ## command line arguments
 import re  ## regex library
 import codecs  ## Unicode file handling
+import base64  ## for encoding to Base64
+
 
 ## debugging:   for setting a breakpoint:
 #pdb.set_trace()## FIXXME
@@ -128,7 +130,7 @@ def check_contact(entry):
     return True
 
 
-def parse_org_contact_file():
+def parse_org_contact_file(orgfile):
     """
     Parses the given Org-mode file for contact entries.
 
@@ -139,6 +141,7 @@ def parse_org_contact_file():
      'workphone':['0399-9876543-42'], 'phone':['001-5489-808908'], 'email':['my-first-address@example.com', 
      'my-second-address@example.com'], 'photograph':['/validated/path/to/image/file.jpeg']}
 
+    @param orgfile: file name of a Org-mode file to parse
     @param return: list of dict-entries containing the contact data item lists
     """
 
@@ -153,7 +156,7 @@ def parse_org_contact_file():
     contacts = []
     currententry = {}
 
-    for rawline in codecs.open(options.orgfile, 'r', encoding='utf-8'):
+    for rawline in codecs.open(orgfile, 'r', encoding='utf-8'):
         line = rawline.strip()   ## trailing and leading spaces are stupid
         linenr += 1
 
@@ -218,9 +221,94 @@ def parse_org_contact_file():
             currententry = {}
             continue
 
-    logging.info("found %s suitable contacts while parsing \"%s\"" % (str(len(contacts)), options.orgfile))
+    logging.info("found %s suitable contacts while parsing \"%s\"" % (str(len(contacts)), orgfile))
     return contacts
 
+def vcard_header():
+    """
+    Returns a string containing a generic VCard header.
+
+    @param return: string containing the VCard header
+    """
+
+    return u"BEGIN:VCARD\nVERSION:2.1"
+
+
+def vcard_footer():
+    """
+    Returns a string containing a generic VCard footer.
+
+    @param return: string containing the VCard footer
+    """
+
+    return u"END:VCARD\n"
+
+def file_extension_and_base64_of_file(filename):
+    """
+    Reads the content of the given file and returns its Base64 encoded content.
+
+    @param filename: a file name
+    @param return: string of file type according to VCard 2.1 standard format
+    @param return: base64 string of file content; None if file not found or error occurred.
+    """
+
+    fullname = os.path.join(options.imagefolder, filename)
+
+    if os.path.isfile(fullname):
+
+        tmpfilename, filetype = os.path.splitext(fullname)
+        upperfiletype = filetype.upper().replace(".", "")
+        if upperfiletype == 'JPG':
+            upperfiletype = 'JPEG'
+        if upperfiletype not in ['JPEG', 'GIF','TIFF','PNG']:  ## FIXXME: PNG is not part of VCard 2.1 standard! -> check!
+            logging.debug("image file extension \"%s\" not in list of known extensions." % upperfiletype)
+            logging.warn("Contact image file \"%s\" has not file type (extension) which is recognized. Skipping it this time." % fullname)
+            return None, None
+
+        with open(fullname, "rb") as image_file:
+            return upperfiletype, base64.b64encode(image_file.read())
+    else:
+        logging.warn("Contact image file \"%s\" could not be found. Skipping it this time." % fullname)
+        return None, None
+
+
+def generate_vcard_file(contacts, targetfile):
+    """
+    Generates a VCard file out of the contact information.
+
+    @param contacts: list of dict-entries containing the contact data item lists
+    @param return: nothing
+    """
+
+    count = 0
+
+    with open(targetfile, 'wb') as output:
+        for contact in contacts:
+            logging.debug("writing contact [%s] ..." % contact['name'])
+            output.write(vcard_header())
+
+            output.write(u'FN:' + contact['name'] + '\n')
+            for mobile in contact['mobile']:
+                output.write(u'TEL;CELL:' + mobile + '\n')
+            for homephone in contact['homephone']:
+                output.write(u'TEL;HOME:' + homephone + '\n')
+            for workphone in contact['workphone']:
+                output.write(u'TEL;WORK:' + workphone + '\n')
+            for phone in contact['phone']:
+                output.write(u'TEL:' + phone + '\n')
+            for email in contact['email']:
+                output.write(u'EMAIL:' + email + '\n')
+            if len(contact['photograph'])>0:
+                filetype, base64string = file_extension_and_base64_of_file(contact['photograph'][0])
+                if filetype and base64string:
+                    output.write("PHOTO;ENCODING=BASE64;TYPE=" + filetype + ":" + base64string + '\n\n')
+                if len(contact['photograph'])>1:
+                    logging.warn("Contact \"%s\" has more than one photograph. I take only the first one." % contact['name'])
+            output.write(vcard_footer())
+            count += 1
+
+        return count
+            
 
 if __name__ == "__main__":
 
@@ -273,8 +361,8 @@ if __name__ == "__main__":
             Utils.error_exit(1)
 
         if os.path.isfile(options.targetfile):
-            logging.critical("Target file \"\" is found. Please use other name or remove existing file." % 
-                             options.outfile)
+            logging.critical("Target file \"%s\" is found. Please use other name or remove existing file." % 
+                             str(options.targetfile))
             error_exit(5)
         else:
             logging.debug("targetfile: [%s]" % options.targetfile)
@@ -287,11 +375,15 @@ if __name__ == "__main__":
             logging.debug("imageabbrev: [%s]" % options.imageabbrev)
 
 
-        contacts = parse_org_contact_file()
-        
+        contacts = parse_org_contact_file(options.orgfile)
+
+        logging.debug("----- parsing finished; generating VCard file ...")
+
+        count = generate_vcard_file(contacts, options.targetfile)
+
         ## FIXXME: write vcard file here
 
-        logging.debug("successfully finished.")
+        logging.info("successfully converted %s contacts to \"%s\"." % (str(count), options.targetfile))
 
     except KeyboardInterrupt:
 
