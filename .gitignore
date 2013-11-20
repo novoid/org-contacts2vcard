@@ -1,1 +1,4 @@
 .ropeproject
+convert_contacts.sh
+mycontacts.log
+mycontacts.vcf

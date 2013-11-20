@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Time-stamp: <2013-11-20 20:11:41 vk>
+# Time-stamp: <2013-11-20 20:53:30 vk>
 
 ## TODO:
 ## * fix parts marked with «FIXXME»
@@ -124,7 +124,8 @@ def check_contact(entry):
 
     if entry['mobile'] == [] and entry['mobile'] == [] and entry['homephone'] == [] and \
             entry['workphone'] == [] and entry['phone'] == [] and entry['email'] == []:
-        logging.warn("Contact \"%s\" did not have a name single phone number or email address -> ignoring" % entry['name'])
+        if not options.omitignores:
+            logging.warn("Contact \"%s\" did not have a name single phone number or email address -> ignoring" % entry['name'])
         return False
 
     return True
@@ -205,8 +206,11 @@ def parse_org_contact_file(orgfile, include_images):
             photograph_components = re.match(PHOTOGRAPH_REGEX, line)
 
             if mobile_components:
-                currententry['mobile'].append(mobile_components.group(1))
-                check_phone_number_and_warn_if_necessary(currententry['name'], mobile_components.group(1))
+                if len(mobile_components.group(1)) > 7:
+                    currententry['mobile'].append(mobile_components.group(1))
+                    check_phone_number_and_warn_if_necessary(currententry['name'], mobile_components.group(1))
+                else:
+                    logging.debug("contact \"%s\" has a phone number shorter than 8 -> ignoring" % currententry['name'])
             elif homephone_components:
                 currententry['homephone'].append(homephone_components.group(1))
                 check_phone_number_and_warn_if_necessary(currententry['name'], homephone_components.group(1))
@@ -356,6 +360,9 @@ if __name__ == "__main__":
 
     parser.add_argument("--imageabbrev", dest="imageabbrev", metavar='NAME', required=False,
                         help="The name of you custom link which defines contact images (e.g., \"photo\").")
+
+    parser.add_argument("--omitignores", dest="omitignores", action="store_true",
+                        help="Omit (only) the ignored contacts due to missing phone number and email.")
 
     parser.add_argument("-v", "--verbose", dest="verbose", action="store_true",
                         help="Enable verbose mode which is quite chatty - be warned.")
