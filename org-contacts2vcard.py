@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Time-stamp: <2013-11-20 20:07:29 vk>
+# Time-stamp: <2013-11-20 20:11:41 vk>
 
 ## TODO:
 ## * fix parts marked with «FIXXME»
@@ -152,7 +152,7 @@ def parse_org_contact_file(orgfile, include_images):
     contacts = [<contact1>, <contact2>, <contact3>, ...]
     with "contact1" like:
     {'name':'First Middle Last', 'mobile':['++43/699/1234567', '0043681987654'], 'homephone':['0316/87654'],
-     'workphone':['0399-9876543-42'], 'phone':['001-5489-808908'], 'email':['my-first-address@example.com', 
+     'workphone':['0399-9876543-42'], 'phone':['001-5489-808908'], 'email':['my-first-address@example.com',
      'my-second-address@example.com'], 'photograph':['/validated/path/to/image/file.jpeg']}
 
     @param orgfile: file name of a Org-mode file to parse
@@ -167,7 +167,7 @@ def parse_org_contact_file(orgfile, include_images):
     propertysearch = 42
     inproperty = 73
     status = headersearch
-    
+
     contacts = []
     currententry = {}
 
@@ -181,7 +181,7 @@ def parse_org_contact_file(orgfile, include_images):
         header_components = re.match(HEADER_REGEX, line)
         if header_components:
             ## in case of new header, make new currententry because previous one was not a contact header with a property
-            currententry = {'mobile':[], 'homephone':[], 'workphone':[], 'phone':[], 'email':[], 'photograph':[]}
+            currententry = {'mobile': [], 'homephone': [], 'workphone': [], 'phone': [], 'email': [], 'photograph': []}
             currententry['name'] = header_components.group(2)
             status = propertysearch
             continue
@@ -233,7 +233,6 @@ def parse_org_contact_file(orgfile, include_images):
 
             continue
 
-
         else:
             ## I must have mixed up status numbers or similar - should never be reached.
             logging.error("Oops. Internal parser error: status \"%s\" unknown. The programmer is an idiot. Current contact entry might get lost due to recovering from that shock. (line number %s)" % (str(status), str(linenr)))
@@ -243,6 +242,7 @@ def parse_org_contact_file(orgfile, include_images):
 
     logging.info("found %s suitable contacts while parsing \"%s\"" % (str(len(contacts)), orgfile))
     return contacts
+
 
 def vcard_header():
     """
@@ -263,6 +263,7 @@ def vcard_footer():
 
     return u"END:VCARD\n"
 
+
 def file_extension_and_base64_of_file(filename):
     """
     Reads the content of the given file and returns its Base64 encoded content.
@@ -280,7 +281,7 @@ def file_extension_and_base64_of_file(filename):
         upperfiletype = filetype.upper().replace(".", "")
         if upperfiletype == 'JPG':
             upperfiletype = 'JPEG'
-        if upperfiletype not in ['JPEG', 'GIF', 'PNG']:  
+        if upperfiletype not in ['JPEG', 'GIF', 'PNG']:
             ## PNG is not part of VCard 2.1 standard! -> However, it works on Android 4.4
             ## TIFF is part of VCard 2.1 standard! -> However, does not work on Android 4.4
             logging.debug("image file extension \"%s\" not in list of known extensions." % upperfiletype)
@@ -320,17 +321,17 @@ def generate_vcard_file(contacts, targetfile):
                 output.write(u'TEL:' + phone + '\n')
             for email in contact['email']:
                 output.write(u'EMAIL:' + email + '\n')
-            if len(contact['photograph'])>0:
+            if len(contact['photograph']) > 0:
                 filetype, base64string = file_extension_and_base64_of_file(contact['photograph'][0])
                 if filetype and base64string:
                     output.write("PHOTO;ENCODING=BASE64;TYPE=" + filetype + ":" + base64string + '\n\n')
-                if len(contact['photograph'])>1:
+                if len(contact['photograph']) > 1:
                     logging.warn("Contact \"%s\" has more than one photograph. I take only the first one." % contact['name'])
             output.write(vcard_footer())
             count += 1
 
         return count
-            
+
 
 if __name__ == "__main__":
 
@@ -378,14 +379,13 @@ if __name__ == "__main__":
 
         ## checking parameters ...
 
-
         if options.verbose and options.quiet:
             logging.error("Options \"--verbose\" and \"--quiet\" found. " +
                           "This does not make any sense, you silly fool :-)")
-            Utils.error_exit(1)
+            error_exit(1)
 
         if os.path.isfile(options.targetfile):
-            logging.critical("Target file \"%s\" is found. Please use other name or remove existing file." % 
+            logging.critical("Target file \"%s\" is found. Please use other name or remove existing file." %
                              str(options.targetfile))
             error_exit(5)
         else:
