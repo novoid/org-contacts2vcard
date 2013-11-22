@@ -1,9 +1,13 @@
-## Time-stamp: <2013-11-20 20:06:13 vk>
+## Time-stamp: <2013-11-22 17:32:58 vk>
 ## -*- coding: utf-8 -*-
 ## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
 
 This file contains org-contacts test entries for testing
 org-contacts2vcard.py in various situations.
+
+Due to the fact that github does not show Org-mode properties, you
+have to open this file in a text editor in order to see the contact
+property entries!
 
 * Test Contacts
 
