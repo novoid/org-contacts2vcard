@@ -1,4 +1,4 @@
-## Time-stamp: <2013-11-17 19:32:07 vk>
+## Time-stamp: <2013-11-25 17:03:41 vk>
 ## -*- coding: utf-8 -*-
 ## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
 
@@ -17,6 +17,25 @@ of [[http://en.wikipedia.org/wiki/Emacs][GNU Emacs]] with [[http://orgmode.org/]
     - Note: the way contact images are referred to is personalized for
       me (see below). Therefore, you have to adopt either the script
       to your needs or you adopt my image method to your Org-mode :-)
+
+** Customizations: org-contacts
+
+My org-contacts-template is more elaborated than the one in
+[[http://orgmode.org/w/?p%3Dorg-mode.git%3Ba%3Dblob_plain%3Bf%3Dcontrib/lisp/org-contacts.el%3Bhb%3DHEAD][org-contacts.el]]. For example, I am using three separated properties
+for addresses (CITY, POSTALCODE, STREET) instead of one. If you are
+using different properties for certain entries, you might want to
+customize in your set-up.
+
+As an example, here are my customizations:
+: (require 'org-contacts)
+: (custom-set-variables
+:  '(org-contacts-files "~/share/all/org-mode/contacts.org")
+:  '(org-contacts-address-property "CITY")
+:  '(org-contacts-birthday-property "BORN")
+:  '(org-contacts-icon-property "PHOTOGRAPH")
+:  )
+
+You can have a look on [[https://github.com/novoid/dot-emacs][my current Emacs configuration on github]].
 
 ** Example
 
