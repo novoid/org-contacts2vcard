@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Time-stamp: <2013-11-20 21:28:43 vk>
+# Time-stamp: <2014-12-07 20:16:40 vk>
 
 ## TODO:
 ## * fix parts marked with «FIXXME»
@@ -300,6 +300,29 @@ def file_extension_and_base64_of_file(contact, filename):
         return None, None
 
 
+def insert_into_string_every_X_characters(mystring, x, insertstring):
+    """
+    After each x characters, insertstring is added to mystring.
+    """
+
+    ## if x is less than 0 or interval is longer than input string, return inputstring:
+    if x < 1 or x > len(mystring):
+        return mystring
+
+    newstring = ''
+    number_of_insertions = int(len(mystring)/x)
+
+    for index in range(number_of_insertions):
+        position = index*x
+        newstring += mystring[position:position+x] + insertstring
+
+    ## add the rest of mystring at the end (if any):
+    if len(mystring)%x != 0:
+        newstring += mystring[-(len(mystring)%x):] # add remainding string
+
+    return newstring
+
+
 def generate_vcard_file(contacts, targetfile):
     """
     Generates a VCard file out of the contact information.
@@ -330,7 +353,8 @@ def generate_vcard_file(contacts, targetfile):
             if len(contact['photograph']) > 0:
                 filetype, base64string = file_extension_and_base64_of_file(contact['name'], contact['photograph'][0])
                 if filetype and base64string:
-                    output.write("PHOTO;ENCODING=BASE64;TYPE=" + filetype + ":" + base64string + '\n\n')
+                    truncated_base64string = insert_into_string_every_X_characters(base64string, 74, '\n ')
+                    output.write("PHOTO;ENCODING=BASE64;TYPE=" + filetype + ":" + truncated_base64string + '\n\n')
                 if len(contact['photograph']) > 1:
                     logging.warn("Contact \"%s\" has more than one photograph. I take only the first one." % contact['name'])
             output.write(vcard_footer())
@@ -340,6 +364,7 @@ def generate_vcard_file(contacts, targetfile):
 
 
 if __name__ == "__main__":
+
 
     mydescription = u"This script converts Org-mode contacts of a certain format\n" + \
         "to a VCard file which is suitable to be imported to Android 4.4 (and probably\n" + \
@@ -378,6 +403,25 @@ if __name__ == "__main__":
     options = parser.parse_args()
 
     logging = initialize_logging(options.verbose, options.quiet)
+
+    if options.verbose:
+
+        ## do some unit testing:  (well, I wrote the tests and did not want to delete them :-)
+        mystring = "1234567890"
+        assert(insert_into_string_every_X_characters(mystring, -1, '.') == mystring)
+        assert(insert_into_string_every_X_characters(mystring, 0, '.') == mystring)
+        assert(insert_into_string_every_X_characters(mystring, 1, '.') == '1.2.3.4.5.6.7.8.9.0.')
+        assert(insert_into_string_every_X_characters(mystring, 2, '.') == '12.34.56.78.90.')
+        assert(insert_into_string_every_X_characters(mystring, 3, '.') == '123.456.789.0')
+        assert(insert_into_string_every_X_characters(mystring, 4, '.') == '1234.5678.90')
+        assert(insert_into_string_every_X_characters(mystring, 5, '.') == '12345.67890.')
+        assert(insert_into_string_every_X_characters(mystring, 6, '.') == '123456.7890')
+        assert(insert_into_string_every_X_characters(mystring, 7, '.') == '1234567.890')
+        assert(insert_into_string_every_X_characters(mystring, 8, '.') == '12345678.90')
+        assert(insert_into_string_every_X_characters(mystring, 9, '.') == '123456789.0')
+        assert(insert_into_string_every_X_characters(mystring, 10, '.') == mystring+'.')
+        assert(insert_into_string_every_X_characters(mystring, 11, '.') == mystring)
+        assert(insert_into_string_every_X_characters(mystring, 9999, '.') == mystring)
 
     try:
 
