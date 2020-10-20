@@ -73,6 +73,8 @@ As you can see, I linked it to files in the folder
 If you use a similar definition, you are able to use my script without
 changes.
 
+NOTE the open issue https://github.com/novoid/org-contacts2vcard/issues/1 for missing contacts and contact images.
+
 * Contribute!
 
 I am looking for your ideas:
