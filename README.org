@@ -13,7 +13,7 @@ above maybe was related to changes to the Android VCard format with version
 4.4. I can't remember.
 
 - *target group*: users of [[http://orgmode.org/][Org-mode]] org-contacts who want to get their
-  contact information to Android 4.4 (only) including:
+  contact information to Android including:
   - First name
   - Last name
   - email addresses
