@@ -7,6 +7,11 @@
 This is a Python script that converts [[http://julien.danjou.info/projects/emacs-packages#org-contacts][org-contacts]] contact information
 of [[http://en.wikipedia.org/wiki/Emacs][GNU Emacs]] with [[http://orgmode.org/][Org-mode]] to Android 4.4 contact [[https://en.wikipedia.org/wiki/VCard][VCard]] import format.
 
+*Update 2020-10-20*: I am still using this code to export my Org-contacts to my
+Android mobile phone (running Android 9). The reason why I wrote "version 4.4"
+above maybe was related to changes to the Android VCard format with version
+4.4. I can't remember.
+
 - *target group*: users of [[http://orgmode.org/][Org-mode]] org-contacts who want to get their
   contact information to Android 4.4 (only) including:
   - First name
