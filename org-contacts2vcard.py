@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
-# Time-stamp: <2014-12-07 20:16:40 vk>
+# Time-stamp: <2020-11-15 18:44:54 vk>
+PROG_VERSION = u"Time-stamp: <2020-06-07 17:40:24 vk>"
 
 ## TODO:
 ## * fix parts marked with «FIXXME»
@@ -24,8 +25,7 @@ import base64  ## for encoding to Base64
 #pdb.set_trace()## FIXXME
 #import pdb
 
-PROG_VERSION_NUMBER = u"0.1"
-PROG_VERSION_DATE = u"2013-11-20"
+PROG_VERSION_DATE = PROG_VERSION[13:23]
 INVOCATION_TIME = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
 
 
@@ -34,7 +34,7 @@ EPILOG = u"\n\
 :license: GPL v3 or any later version\n\
 :URL: https://github.com/novoid/org-contacts2vcard\n\
 :bugreports: via github or <tools@Karl-Voit.at>\n\
-:version: " + PROG_VERSION_NUMBER + " from " + PROG_VERSION_DATE + "\n"
+:version: " + PROG_VERSION_DATE + "\n"
 
 LOGGINGID = "org-contacts2vcard"
 
@@ -426,8 +426,7 @@ if __name__ == "__main__":
     try:
 
         if options.version:
-            print os.path.basename(sys.argv[0]) + " version " + PROG_VERSION_NUMBER + \
-                " from " + PROG_VERSION_DATE
+            print os.path.basename(sys.argv[0]) + " version " + PROG_VERSION_DATE
             sys.exit(0)
 
         ## checking parameters ...
