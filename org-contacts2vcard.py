@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
-# Time-stamp: <2020-11-15 18:44:54 vk>
+# Time-stamp: <2020-11-15 22:24:48 vk>
 PROG_VERSION = u"Time-stamp: <2020-06-07 17:40:24 vk>"
 
 ## TODO:
@@ -141,8 +141,8 @@ def check_phone_number_and_warn_if_necessary(name, number):
     @param return: nothing
     """
 
-    if number[:2] != '00':
-        logging.warning("Contact \"%s\": number \"%s\" does not start with \"00\"." % (name, number))
+    if number[:1] != '+':
+        logging.warning("Contact \"%s\": number \"%s\" does not start with \"+\"." % (name, number))
 
 
 def parse_org_contact_file(orgfile, include_images):

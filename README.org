@@ -1,4 +1,4 @@
-## Time-stamp: <2013-11-25 17:03:41 vk>
+## Time-stamp: <2020-11-15 22:26:31 vk>
 ## -*- coding: utf-8 -*-
 ## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
 
@@ -50,6 +50,10 @@ Please take a look at the example org-contact file
 The file [[https://github.com/novoid/org-contacts2vcard/blob/master/example_invocation.sh][example_invocation.sh]] gives you some impression on how to
 invoke this script.
 
+Please note that with 2020-11-15 I switched the [[https://en.wikipedia.org/wiki/International_direct_dialing][international number
+prefix (IDD)]] from =00= to =+= because sources like [[https://www.studyabroad.com/resources/international-calling-codes][this]] tells me this
+is safer.
+
 ** Contact Images
 
 In [[https://github.com/novoid/org-contacts2vcard/blob/master/testdata/testcontacts.org][testdata/testcontacts.org]] you will notice contact photographs are
@@ -73,7 +77,10 @@ As you can see, I linked it to files in the folder
 If you use a similar definition, you are able to use my script without
 changes.
 
-NOTE the open issue https://github.com/novoid/org-contacts2vcard/issues/1 for missing contacts and contact images.
+NOTE the open issue
+https://github.com/novoid/org-contacts2vcard/issues/1 for missing
+contacts and contact images which is still valid for 2020-11-15 and
+Android 11 on a Google Pixel 4a phome.
 
 * Contribute!
 
