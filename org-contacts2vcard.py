@@ -1,7 +1,7 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2020-11-15 22:24:48 vk>
-PROG_VERSION = u"Time-stamp: <2020-06-07 17:40:24 vk>"
+# Time-stamp: <2023-03-01 23:23:43 vk>
+PROG_VERSION = "Time-stamp: <2020-06-07 17:40:24 vk>"
 
 ## TODO:
 ## * fix parts marked with «FIXXME»
@@ -29,7 +29,7 @@ PROG_VERSION_DATE = PROG_VERSION[13:23]
 INVOCATION_TIME = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
 
 
-EPILOG = u"\n\
+EPILOG = "\n\
 :copyright: (c) 2013 by Karl Voit <tools@Karl-Voit.at>\n\
 :license: GPL v3 or any later version\n\
 :URL: https://github.com/novoid/org-contacts2vcard\n\
@@ -119,13 +119,13 @@ def check_contact(entry):
         return False
 
     if entry['name'] == "":
-        logging.warn("Contact did not have a name -> ignoring")
+        logging.warning("Contact did not have a name -> ignoring")
         return False
 
     if entry['mobile'] == [] and entry['mobile'] == [] and entry['homephone'] == [] and \
             entry['workphone'] == [] and entry['phone'] == [] and entry['email'] == []:
         if not options.omitignores:
-            logging.warn("Contact \"%s\" did not have a name single phone number or email address -> ignoring" % entry['name'])
+            logging.warning("Contact \"%s\" did not have a name single phone number or email address -> ignoring" % entry['name'])
         return False
 
     return True
@@ -192,7 +192,7 @@ def parse_org_contact_file(orgfile, include_images):
             continue
 
         if status == propertysearch:
-            if line == u':PROPERTIES:':
+            if line == ':PROPERTIES:':
                 status = inproperty
             continue
 
@@ -227,7 +227,7 @@ def parse_org_contact_file(orgfile, include_images):
                     currententry['photograph'].append(photograph_components.group(1))
                 else:
                     logging.debug("contact has photograph but include_images is False: [%s]" % currententry['name'])
-            elif line == u':END:':
+            elif line == ':END:':
                 if check_contact(currententry):
                     contacts.append(currententry)
                     logging.debug("appended contact \"%s\"" % currententry['name'])
@@ -255,7 +255,7 @@ def vcard_header():
     @param return: string containing the VCard header
     """
 
-    return u"BEGIN:VCARD\nVERSION:2.1\n"
+    return "BEGIN:VCARD\nVERSION:2.1\n"
 
 
 def vcard_footer():
@@ -265,7 +265,7 @@ def vcard_footer():
     @param return: string containing the VCard footer
     """
 
-    return u"END:VCARD\n"
+    return "END:VCARD\n"
 
 
 def file_extension_and_base64_of_file(contact, filename):
@@ -290,13 +290,13 @@ def file_extension_and_base64_of_file(contact, filename):
             ## PNG is not part of VCard 2.1 standard! -> However, it works on Android 4.4
             ## TIFF is part of VCard 2.1 standard! -> However, does not work on Android 4.4
             logging.debug("image file extension \"%s\" not in list of known extensions." % upperfiletype)
-            logging.warn("Contact \"%s\": image file \"%s\" has not file type (extension) which is recognized. Skipping it this time." % (contact, fullname))
+            logging.warning("Contact \"%s\": image file \"%s\" has not file type (extension) which is recognized. Skipping it this time." % (contact, fullname))
             return None, None
 
         with open(fullname, "rb") as image_file:
             return upperfiletype, base64.b64encode(image_file.read())
     else:
-        logging.warn("Contact \"%s\": image file \"%s\" could not be found. Skipping it this time." % (contact, fullname))
+        logging.warning("Contact \"%s\": image file \"%s\" could not be found. Skipping it this time." % (contact, fullname))
         return None, None
 
 
@@ -338,25 +338,26 @@ def generate_vcard_file(contacts, targetfile):
             logging.debug("writing contact [%s] ..." % contact['name'])
             output.write(vcard_header())
 
-            output.write(u'FN:' + unicode(contact['name']) + u'\n')
+            output.write('FN:' + str(contact['name']) + '\n')
 
             for mobile in contact['mobile']:
-                output.write(u'TEL;CELL:' + mobile + '\n')
+                output.write('TEL;CELL:' + mobile + '\n')
             for homephone in contact['homephone']:
-                output.write(u'TEL;HOME:' + homephone + '\n')
+                output.write('TEL;HOME:' + homephone + '\n')
             for workphone in contact['workphone']:
-                output.write(u'TEL;WORK:' + workphone + '\n')
+                output.write('TEL;WORK:' + workphone + '\n')
             for phone in contact['phone']:
-                output.write(u'TEL:' + phone + '\n')
+                output.write('TEL:' + phone + '\n')
             for email in contact['email']:
-                output.write(u'EMAIL:' + email + '\n')
+                output.write('EMAIL:' + email + '\n')
             if len(contact['photograph']) > 0:
                 filetype, base64string = file_extension_and_base64_of_file(contact['name'], contact['photograph'][0])
                 if filetype and base64string:
-                    truncated_base64string = insert_into_string_every_X_characters(base64string, 74, '\n ')
-                    output.write("PHOTO;ENCODING=BASE64;TYPE=" + filetype + ":" + truncated_base64string + '\n\n')
+                    # 2023-03-01: this is causing "TypeError: can't concat str to bytes":
+                    truncated_base64string = insert_into_string_every_X_characters(str(base64string), 74, '\n ')
+                    output.write("PHOTO;ENCODING=BASE64;TYPE=" + filetype + ":" + str(truncated_base64string)[2:-1] + '\n\n')
                 if len(contact['photograph']) > 1:
-                    logging.warn("Contact \"%s\" has more than one photograph. I take only the first one." % contact['name'])
+                    logging.warning("Contact \"%s\" has more than one photograph. I take only the first one." % contact['name'])
             output.write(vcard_footer())
             count += 1
 
@@ -366,7 +367,7 @@ def generate_vcard_file(contacts, targetfile):
 if __name__ == "__main__":
 
 
-    mydescription = u"This script converts Org-mode contacts of a certain format\n" + \
+    mydescription = "This script converts Org-mode contacts of a certain format\n" + \
         "to a VCard file which is suitable to be imported to Android 4.4 (and probably\n" + \
         "others as well). Please refer to \n" + \
         "https://github.com/novoid/org-contacts2vcard for more information."
@@ -426,7 +427,7 @@ if __name__ == "__main__":
     try:
 
         if options.version:
-            print os.path.basename(sys.argv[0]) + " version " + PROG_VERSION_DATE
+            print(os.path.basename(sys.argv[0]) + " version " + PROG_VERSION_DATE)
             sys.exit(0)
 
         ## checking parameters ...
