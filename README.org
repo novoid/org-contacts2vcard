@@ -1,4 +1,4 @@
-## Time-stamp: <2020-11-15 22:26:31 vk>
+## Time-stamp: <2026-06-06 17:46:00 vk>
 ## -*- coding: utf-8 -*-
 ## This file is best viewed with GNU Emacs Org-mode: http://orgmode.org/
 
@@ -92,6 +92,38 @@ contribute!
 I am using [[http://www.python.org/dev/peps/pep-0008/][Python PEP8]] and some ideas from [[http://en.wikipedia.org/wiki/Test-driven_development][Test Driven Development
 (TDD)]].
 
+* How to Thank Me
+# --- BEGIN SHARED: how_to_thank_me --- see https://github.com/novoid/screencasts/
+
+I'm glad if you like my tool. I've got way more projects on:
+
+- [[https://github.com/novoid/][GitHub]] (oldest projects),
+- [[https://gitlab.com/publicvoit/][GitLab.com]] (older projects), and
+- [[https://codeberg.org/publicvoit/][Codeberg]] (newest projects).
+
+If you want to support me:
+
+- [[https://karl-voit.at/2018/06/07/cardware/][Send old-fashioned *postcard* per snailmail]] - I love personal feedback!
+  - see [[http://tinyurl.com/j6w8hyo][my address]]
+- Send feature wishes or improvements as an issue 
+- Create issues for bugs
+- Contribute merge requests for bug fixes
+- Check out my other cool projects on the platforms above
+
+If you want to contribute to this cool project, please fork and
+contribute!
+
+I am using [[http://www.python.org/dev/peps/pep-0008/][Python PEP8]] and occasionally some ideas from [[http://en.wikipedia.org/wiki/Test-driven_development][Test Driven
+Development (TDD)]]. I fancy Python3 with [[https://typing.python.org/en/latest/spec/annotations.html][type annotations]], although I'm
+not using them everywhere at the moment. Starting with 2025, I began
+to use help from Claude.ai which is a huge improvement, given my lack
+of programming practice and knowledge.
+
+After all, each of my tools was developed because I needed its
+functionality and could not get it elsewhere - at least to my
+knowledge or taste.
+
+# --- END SHARED: how_to_thank_me --- see https://github.com/novoid/screencasts/
 
 * Local Variables                                                  :noexport:
 # Local Variables:
