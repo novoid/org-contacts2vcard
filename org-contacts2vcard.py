@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2023-03-01 23:23:43 vk>
+# Time-stamp: <2023-03-01 23:28:56 vk>
 PROG_VERSION = "Time-stamp: <2020-06-07 17:40:24 vk>"
 
 ## TODO:
@@ -353,7 +353,6 @@ def generate_vcard_file(contacts, targetfile):
             if len(contact['photograph']) > 0:
                 filetype, base64string = file_extension_and_base64_of_file(contact['name'], contact['photograph'][0])
                 if filetype and base64string:
-                    # 2023-03-01: this is causing "TypeError: can't concat str to bytes":
                     truncated_base64string = insert_into_string_every_X_characters(str(base64string), 74, '\n ')
                     output.write("PHOTO;ENCODING=BASE64;TYPE=" + filetype + ":" + str(truncated_base64string)[2:-1] + '\n\n')
                 if len(contact['photograph']) > 1:
